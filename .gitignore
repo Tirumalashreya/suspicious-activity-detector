@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+
+# Dataset (DON’T upload heavy data)
+dataset/
+
+
+dataset/
+
+
+
+# OS files
+.DS_Store
+
+# Virtual environment
+venv/
