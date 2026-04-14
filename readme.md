@@ -2,21 +2,38 @@
 
 ## 📌 Overview
 
-This project detects suspicious activities from video streams using deep learning (ResNet50).
-
-It supports:
-
-* Webcam-based real-time detection
-* Video file analysis
-* Audio alerts for suspicious events
+This project detects suspicious activities from video streams using a deep learning model (ResNet50).
 
 ---
 
-## 🧠 How it works
+## ⚠️ IMPORTANT (STRICT USAGE)
 
-1. Convert videos → frames
-2. Train CNN model on images
-3. Use trained model for real-time detection
+This project follows **ONE FIXED PIPELINE ONLY**.
+
+👉 Use ONLY these files:
+
+* `extract_frames.py`
+* `train_model.py`
+* `model_loader.py`
+* `app.py`
+
+❌ Do NOT use:
+
+* `app1.py`
+* `train1.py`
+* `trainc.py`
+* `train_model_old.py`
+* `model1.py`
+
+These are experimental and may break the pipeline.
+
+---
+
+## 🧠 Pipeline
+
+```
+Videos → Frames → Dataset → Train Model → Detection
+```
 
 ---
 
@@ -24,15 +41,16 @@ It supports:
 
 ```
 .
-├── extract_frames.py
-├── train_model.py
-├── model_loader.py
-├── app.py
-├── app1.py
+├── extract_frames.py        # Step 1: Create dataset
+├── train_model.py          # Step 2: Train model
+├── model_loader.py         # Step 3: Load trained model
+├── app.py                  # Step 4: Run detection
+
 ├── dataset/
 │   └── train/
 │       ├── normal/
 │       └── suspicious/
+
 ├── model/
 │   └── suspicious_detector.pt
 ```
@@ -53,12 +71,26 @@ pip install torch torchvision opencv-python numpy
 python extract_frames.py
 ```
 
+👉 Converts videos → images
+👉 Creates dataset inside `dataset/train`
+
 ---
 
 ## 🧠 Step 2: Train Model
 
 ```bash
 python train_model.py
+```
+
+👉 What happens:
+
+* Loads images from dataset
+* Uses ResNet50 (pretrained)
+* Trains classifier (normal vs suspicious)
+* Saves model:
+
+```
+model/suspicious_detector.pt
 ```
 
 ---
@@ -68,37 +100,55 @@ python train_model.py
 ### Webcam
 
 ```bash
-python app1.py
+python app.py
 ```
 
 ### Video file
 
 ```bash
-python app1.py --source video --path video.mp4
+python app.py --source video --path video.mp4
 ```
 
 ---
 
-## 🔊 Features
+## 🔄 How Prediction Works
+
+1. Frame is captured
+2. Resized to 224×224
+3. Converted to tensor
+4. Passed to model
+5. Output:
+
+   * Normal activity
+   * Suspicious activity
+
+---
+
+## ⚠️ Important Notes
+
+* Training and inference architecture MUST match
+* Dataset should be balanced
+* Model file must exist before running app
+
+---
+
+## 🚀 Features
 
 * Real-time detection
-* Confidence scoring
-* Audio alerts
-* FPS tracking
-* Works on CPU / GPU / Apple MPS
+* Works on CPU / GPU
+* Simple and reproducible pipeline
 
 ---
 
-## ⚠️ Notes
+## ❗ Common Errors
 
-* Ensure dataset is balanced (normal vs suspicious)
-* Model accuracy depends on training data quality
-* Architecture in `model_loader.py` must match training
+### Error: size mismatch
+
+👉 Cause: using wrong model file or wrong script
+👉 Fix: retrain using `train_model.py`
 
 ---
 
-## 🚀 Future Improvements
+## 👩‍💻 Author
 
-* Use video-based models (LSTM / 3D CNN)
-* Add object detection (YOLO)
-* Deploy as web app / CCTV system
+Shreya Svs
