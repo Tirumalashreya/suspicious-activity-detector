@@ -37,6 +37,91 @@ Videos → Frames → Dataset → Train Model → Detection
 
 ---
 
+## 📦 Dataset
+
+This project uses the **UCF Anomaly Detection Dataset**:
+
+👉 https://www.kaggle.com/datasets/minhajuddinmeraj/anomalydetectiondatasetucf
+
+### 📥 Setup Dataset
+
+1. Download the dataset from Kaggle
+2. Extract it into the project folder as:
+
+```
+archive/
+```
+
+### Expected structure:
+
+```
+archive/
+├── Anomaly-Videos-Part-1/
+├── Anomaly-Videos-Part-4/
+├── Normal_Videos_for_Event_Recognition/
+├── Burglary/
+├── FightingA_Part1/
+...
+```
+
+---
+
+## 📁 Dataset Creation (VERY IMPORTANT)
+
+You do NOT need to manually create `normal/` and `suspicious/` folders.
+
+Run:
+
+```bash
+python extract_frames.py
+```
+
+👉 This script will automatically:
+
+* Read videos from `archive/`
+* Categorize them into:
+
+  * `normal`
+  * `suspicious`
+* Extract frames from each video
+
+---
+
+## 📁 Final Dataset Structure
+
+After running the script, your dataset will look like:
+
+```
+dataset/
+└── train/
+    ├── normal/
+    │   ├── video1/
+    │   │   ├── frame_000.jpg
+    │   │   ├── frame_001.jpg
+    │   │   └── ...
+    │   └── ...
+    │
+    └── suspicious/
+        ├── video2/
+        │   ├── frame_000.jpg
+        │   ├── frame_001.jpg
+        │   └── ...
+        └── ...
+```
+
+---
+
+## 🧠 Class Mapping
+
+The model automatically assigns labels based on folder names:
+
+* `normal` → 0
+* `suspicious` → 1
+
+Handled internally by `torchvision.datasets.ImageFolder`.
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -71,9 +156,6 @@ pip install torch torchvision opencv-python numpy
 python extract_frames.py
 ```
 
-👉 Converts videos → images
-👉 Creates dataset inside `dataset/train`
-
 ---
 
 ## 🧠 Step 2: Train Model
@@ -82,12 +164,7 @@ python extract_frames.py
 python train_model.py
 ```
 
-👉 What happens:
-
-* Loads images from dataset
-* Uses ResNet50 (pretrained)
-* Trains classifier (normal vs suspicious)
-* Saves model:
+👉 Output:
 
 ```
 model/suspicious_detector.pt
@@ -126,8 +203,9 @@ python app.py --source video --path video.mp4
 
 ## ⚠️ Important Notes
 
+* Dataset is NOT included in this repo (too large)
+* You must download it manually from Kaggle
 * Training and inference architecture MUST match
-* Dataset should be balanced
 * Model file must exist before running app
 
 ---
@@ -144,7 +222,7 @@ python app.py --source video --path video.mp4
 
 ### Error: size mismatch
 
-👉 Cause: using wrong model file or wrong script
+👉 Cause: using wrong model or wrong script
 👉 Fix: retrain using `train_model.py`
 
 ---
